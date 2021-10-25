@@ -28,7 +28,7 @@ app.get("/api/:date", function (req, res) {
   const {date: dateTimeStamp} = req.params
   let result;
   let d;
-  if(dateTimeStamp.split(" ").length >= 3){
+  if(dateTimeStamp.split("-").length >= 3){
     d = new Date(dateTimeStamp);
     result = {
       unix: d.getTime(),
