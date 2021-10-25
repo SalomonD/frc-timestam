@@ -24,38 +24,67 @@ app.get("/api/hello", function (req, res) {
     res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date", function (req, res) {
+app.get("/api/:date?", function (req, res) {
+    const {date: dateTimeStamp} = req.params
+
+    let result = {error: "Invalid Date"};
+    let d = new Date(dateTimeStamp);
+
+    if (!dateTimeStamp) {
+        d = new Date();
+        result = {
+            unix: d.getTime(),
+            utc: d.toUTCString()
+        }
+    } else {
+        d = (new Date(dateTimeStamp)).toString() !== "Invalid Date" ?
+            new Date(dateTimeStamp) :
+            (new Date(+dateTimeStamp)).toString() !== "Invalid Date" ?
+                new Date(+dateTimeStamp) : null;
+
+        if (d) {
+            result = {
+                unix: d.getTime(),
+                utc: d.toUTCString()
+            }
+        }
+    }
+
+    res.json(result)
+});
+
+/*app.get("/api/:date?", function (req, res) {
     const {date: dateTimeStamp} = req.params
 
     let result = {error : "Invalid Date"};
     let d;
 
-      if (!dateTimeStamp.trim().length) {
+    if (!dateTimeStamp) {
         d = new Date();
         result = {
-          unix: d.getTime(),
-          utc: d.toUTCString()
+            unix: d.getTime(),
+            utc: d.toUTCString()
         }
-      } else if (dateTimeStamp.split("-").length >= 3) {
+    } else if (dateTimeStamp.split("-").length >= 3) {
         d = new Date(dateTimeStamp);
         if(!isNaN(d)){
-          result = {
-            unix: d.getTime(),
-            utc: d.toUTCString()
-          }
+            result = {
+                unix: d.getTime(),
+                utc: d.toUTCString()
+            }
         }
-      } else {
+    } else {
         d = new Date(+dateTimeStamp)
         if(!isNaN(d)){
-          result = {
-            unix: d.getTime(),
-            utc: d.toUTCString()
-          }
+            result = {
+                unix: d.getTime(),
+                utc: d.toUTCString()
+            }
         }
-      }
+    }
 
     res.json(result)
-});
+});*/
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
